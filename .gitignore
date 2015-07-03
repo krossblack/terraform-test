@@ -2,3 +2,5 @@ aws_region.tf
 variables.tf
 terraform.tfstate.backup
 terraform.tfstate
+.envrc
+.terraform

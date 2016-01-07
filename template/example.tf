@@ -1,6 +1,6 @@
 resource "aws_instance" "test" {
     ami = "ami-89634988"
-    instance_type = "c3.large"
+    instance_type = "t2.micro"
     key_name = "${var.key_name}"
 
     # Our Security group to allow HTTP and SSH access
@@ -9,7 +9,12 @@ resource "aws_instance" "test" {
     iam_instance_profile = "ec2"
     root_block_device {
         delete_on_termination = "true"
-        volume_size = "10"
+        volume_size = "8"
+    }
+    ebs_block_device = {
+        device_name = "/dev/sdb"
+        volume_type = "gp2"
+        volume_size = "8"
     }
     tags {
         Name = "test"
@@ -17,6 +22,7 @@ resource "aws_instance" "test" {
         Stage = "production"
         Roles = "web"
     }
+    user_data = "${file("userdata.sh")}"
 }
 
 resource "aws_security_group" "test" {
@@ -43,7 +49,7 @@ resource "aws_security_group" "test" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
-resource "aws_eip" "sftp" {
-    instance = "${aws_instance.test.id}"
-    vpc = true
-}
+#resource "aws_eip" "sftp" {
+#    instance = "${aws_instance.test.id}"
+#    vpc = true
+#}
